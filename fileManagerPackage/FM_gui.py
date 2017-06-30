@@ -1,3 +1,4 @@
-import maya.cmds as cmds
 import os 
 import re
+
+print "this is gui file"
