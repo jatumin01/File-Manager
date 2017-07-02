@@ -12,6 +12,23 @@ class Function(object):
         self.sequencesPath = ""
         self.shotsPath = ""
         self.fileType = 'mayaAscii'
+        self.deptList = []
+    
+    def searchFile(self,input):
+        self.fileFind = ""
+        self.List = []
+        self.searchAdetp = []
+        for ix in input :
+            self.searchAdetp+="["+ix+"]"
+
+        for x in self.deptList :
+            if re.findall("%s"%("".join(self.searchAdetp)),x) :
+                self.fileFind+=x
+                self.List.append(x)
+
+            
+        return self.List
+       
         
     def set_fileType(self,input):
         self.fileType = input
@@ -87,6 +104,8 @@ print test.get_sequences()
 print test.get_shots()
 print test.get_dept()
 print test.get_showRealtime()
+print test.searchFile("v002")
+
 
 
 
