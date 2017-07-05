@@ -11,7 +11,7 @@ class Function(object):
         self.realtimePath = ""
         self.projectPath = ""
         self.projectManagePath = ""
-        self.sequencesPath = ""
+        self.sequences_categoryPath = ""
         self.shotsPath = ""
         self.taskPath = ""
         self.taskName = ""
@@ -67,7 +67,7 @@ class Function(object):
 #          searchFile             # 
 #                                 #
 ###################################
-    def searchFile(self,input):
+    def searchFile(self,input = ""):
         self.fileFind = ""
         self.List = []
         self.searchAdetp = []
@@ -79,7 +79,6 @@ class Function(object):
                 self.fileFind+=x
                 self.List.append(x)
 
-            
         return self.List
        
 ###################################
@@ -115,20 +114,30 @@ class Function(object):
 #                                 #
 ###################################
     def defultSystax(self):
+        self.taskNaming = "_taskName_"
+        if self.follow == 1 :
+            if self.searchBox != "" :
+                self.taskNaming = "_"+self.searchBox+"_"
+
         if self.taskName == "" :
             self.defultSystax = "None Syntax"
             return self.defultSystax 
         else :
-            self.defultSystax = "AAAA"
             if self.projectManage == "sequences" :
                 self.shotsName = self.shots_categery
+                self.defultSystax = self.shotsName + "_" + self.dept + self.taskNaming + self.verstion +".ma"
             elif self.projectManage == "assets" :
-                if self.sequences == "Character" :
+                if self.sequences_category == "Character" :
                     self.shotsName = "Char"
-                elif self.sequences == "Prop" :
+                elif self.sequences_category == "Prop" :
                     self.shotsName = "Prop"
-            self.defultSystax = self.shotsName + "_" + self.dept + "_taskName_v000.ma"
+                self.defultSystax = self.shotsName + "_" + self.shots_categery +"_"+ self.dept +"_" + self.verstion +".ma"
             return self.defultSystax 
+
+    def defultSystax_followTaskSearch(self,follow = 0):
+        self.follow = follow
+    def defultSystax_updateVersion(self,update = 0):
+        self.update = update
 
 ###################################
 #                                 #
@@ -138,7 +147,7 @@ class Function(object):
     def clearOpen(self):
         self.showProject = 0
         self.showProjectManage = 0
-        self.showSequences = 0
+        self.showSequences_category = 0
         self.showShots = 0
         self.showDept = 0
         self.showTask = 0
@@ -152,27 +161,43 @@ class Function(object):
         if self.showTask == 1:
             self.showDept = 1 
             self.showShots =  1
-            self.showSequences = 1
+            self.showSequences_category = 1
             self.showProjectManage = 1
             self.showProject = 1
         elif  self.showDept == 1 :
             self.showShots = 1
-            self.showSequences = 1
+            self.showSequences_category = 1
             self.showProjectManage = 1
             self.showProject = 1
         elif self.showShots == 1 :
-            self.showSequences = 1
+            self.showSequences_category = 1
             self.showProjectManage = 1
             self.showProject = 1
-        elif self.showSequences == 1 :
+        elif self.showSequences_category == 1 :
             self.showProject = 1
             self.showProjectManage = 1
         elif self.showProjectManage == 1 :
             self.showProject = 1
         elif self.showProject == 1 :
             pass
+###################################
+#                                 #
+#         updateVersion           # 
+#                                 #
+###################################  
+    def updateVersion(self,taskFile):
+        self.verstion = "v001"
+        if taskFile != [] :
+            if self.update == 1 :
+                self.verstionList = []
+                for x in taskFile :
+                    self.verstionList += re.findall("[v][0-9]{3}",x)
+                print self.verstionList[-1]
+                self.verstionNew = self.verstionList[-1].split("v")
+                self.convertNumVerstion = int(self.verstionNew[-1])+1
+                self.verstion = "v%03d"%(self.convertNumVerstion) 
 
-    
+        return self.verstion
 
 
 
@@ -217,19 +242,19 @@ class Function(object):
 #        sequences/assets         # 
 #                                 #
 ###################################  
-    def set_sequences(self,input):
+    def set_sequences_category(self,input):
         self.clearOpen()
-        self.showSequences = 1
+        self.showSequences_category = 1
         self.checkOpen()
-        self.sequencesPath = '%s/%s'%(self.projectManagePath,input)
-        self.sequences = input
-        self.realtimePath = self.sequencesPath
-        self.sequencesList = os.listdir(self.sequencesPath)
-    def get_sequences(self):
-        if self.showSequences == 1 :
-            return self.sequencesList
+        self.sequences_categoryPath = '%s/%s'%(self.projectManagePath,input)
+        self.sequences_category = input
+        self.realtimePath = self.sequences_categoryPath
+        self.sequences_categoryList = os.listdir(self.sequences_categoryPath)
+    def get_sequences_category(self):
+        if self.showSequences_category == 1 :
+            return self.sequences_categoryList
         else :
-            print "[Sequences]"
+            print "[Sequences_category]"
 
 ###################################
 #                                 #
@@ -240,7 +265,7 @@ class Function(object):
         self.clearOpen()
         self.showShots = 1
         self.checkOpen()
-        self.shotsPath = '%s/%s'%(self.sequencesPath,input)
+        self.shotsPath = '%s/%s'%(self.sequences_categoryPath,input)
         self.shots_categery = input
         self.realtimePath = self.shotsPath
         self.shotsList = os.listdir(self.shotsPath)
@@ -263,10 +288,17 @@ class Function(object):
         self.deptPath = '%s/%s/scenes'%(self.shotsPath,input)
         self.dept = input
         self.realtimePath = self.deptPath
-        self.deptList = os.listdir(self.deptPath)        
-    def get_dept(self):
+        self.deptList = os.listdir(self.deptPath) 
+    def get_dept(self,inputSearch=""):
+        self.searchBox = inputSearch
         if self.showDept == 1 :
-            return self.deptList
+            if self.searchBox != "" : 
+                self.updateVersion(self.searchFile(inputSearch))
+                return self.searchFile(inputSearch)
+            else :
+                self.updateVersion(self.deptList)
+                return self.deptList
+
         else :
             print "[Dept]"
         
@@ -296,9 +328,9 @@ class Function(object):
     def testGet(self):
         print "project      : " + str(test.get_project())
         print "projectManage: " + str(test.get_projectManage())
-        print "sequences    : " + str(test.get_sequences())
+        print "seq / cate   : " + str(test.get_sequences_category())
         print "Shots        : " + str(test.get_shots())
-        print "Dept         : " + str(test.get_dept())
+        print "Dept         : " + str(test.get_dept("block"))
         print "Task         : " + str(test.get_task())
         print "Realtime     : " + str(test.get_showRealtime())
         test.set_fileDisplay()
@@ -309,27 +341,34 @@ class Function(object):
 test = Function()
 print test.userPath
 
+test.defultSystax_followTaskSearch(1)
+test.defultSystax_updateVersion(1)
+
 test.set_project("YIT")
 test.set_projectManage("sequences")
-test.set_sequences("Y01")
+test.set_sequences_category("Y01")
 test.set_shots("Y01_0020")
 test.set_dept("Animation")
 
 test.set_projectManage("assets")
-'''
-test.set_sequences("Prop")
+
+test.set_sequences_category("Prop")
 test.set_shots("weapon")
-test.set_sequences("Character")
+test.set_sequences_category("Character")
 test.set_shots("norman")
 test.set_dept("Model")
-test.set_task("Char_Norman_A1_v010.mb")
 
+test.set_task("Char_Norman_A1_v010.mb")
+'''
 test.set_projectManage("sequences")
-test.set_sequences("Y01")
+
+test.set_sequences_category("Y01")
 test.set_shots("Y01_0020")
 test.set_dept("Animation")
 test.set_task("Y01_0020_Animation_master.v001.ma")
 '''
+
+
 #########################
 test.testGet()
 
