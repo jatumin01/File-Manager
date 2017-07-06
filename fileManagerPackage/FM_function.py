@@ -330,7 +330,7 @@ class Function(object):
         print "projectManage: " + str(test.get_projectManage())
         print "seq / cate   : " + str(test.get_sequences_category())
         print "Shots        : " + str(test.get_shots())
-        print "Dept         : " + str(test.get_dept("block"))
+        print "Dept         : " + str(test.get_dept("master"))
         print "Task         : " + str(test.get_task())
         print "Realtime     : " + str(test.get_showRealtime())
         test.set_fileDisplay()
@@ -345,6 +345,7 @@ test.defultSystax_followTaskSearch(1)
 test.defultSystax_updateVersion(1)
 
 test.set_project("YIT")
+
 test.set_projectManage("sequences")
 test.set_sequences_category("Y01")
 test.set_shots("Y01_0020")
@@ -359,14 +360,15 @@ test.set_shots("norman")
 test.set_dept("Model")
 
 test.set_task("Char_Norman_A1_v010.mb")
-'''
+
 test.set_projectManage("sequences")
 
 test.set_sequences_category("Y01")
 test.set_shots("Y01_0020")
 test.set_dept("Animation")
+
 test.set_task("Y01_0020_Animation_master.v001.ma")
-'''
+
 
 
 #########################
