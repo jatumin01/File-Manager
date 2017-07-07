@@ -7,7 +7,8 @@ import getpass
 
 class Function(object):
     def __init__(self):
-        self.userPath = "C:/Users/%s/Documents/yggintern"%(getpass.getuser())
+        self.userPath = "C:/Users/%s/Documents"%(getpass.getuser())
+        self.startProjectPath = ""
         self.realtimePath = ""
         self.projectPath = ""
         self.projectManagePath = ""
@@ -15,8 +16,9 @@ class Function(object):
         self.shotsPath = ""
         self.taskPath = ""
         self.taskName = ""
-        self.fileType = 'mayaAscii'
+        self.fileType = ['mayaAscii','mb']
         self.deptList = []
+        self.nonee=["None"]
         self.clearOpen()
 
 ###################################
@@ -38,13 +40,13 @@ class Function(object):
        self.s = round(size_bytes / self.p, 2)
        return "%s %s" % (self.s, self.size_name[self.i]) 
 
-    def get_fileDisplay(self):
+    def get_time(self):
         if self.taskName == "" :
             print "No File"
         else :
-            print "File Name     : " +self.fileName
-            print "Date Modified : " +self.fileTime
-            print "Size          : " +self.convert_size(self.fileSize)
+            return self.fileTime
+    def get_size(self):
+        return self.convert_size(self.fileSize)
 
 ###################################
 #                                 #
@@ -145,6 +147,7 @@ class Function(object):
 #                                 #
 ###################################
     def clearOpen(self):
+        self.showstartProject = 1
         self.showProject = 0
         self.showProjectManage = 0
         self.showSequences_category = 0
@@ -200,7 +203,21 @@ class Function(object):
         return self.verstion
 
 
-
+###################################
+#                                 #
+#           startProject          # 
+#                                 #
+###################################
+    def set_startProject(self,input):
+        self.clearOpen()
+        self.startProjectPath = '%s/%s'%(self.userPath,input)
+        self.realtimePath = self.startProjectPath
+        self.startProjectList = os.listdir(self.startProjectPath)
+    def get_startProject(self):
+        if self.showstartProject == 1 :
+            return self.startProjectList
+        else :
+            return self.nonee
 ###################################
 #                                 #
 #            Project              # 
@@ -210,14 +227,14 @@ class Function(object):
         self.clearOpen()
         self.showProject = 1
         self.checkOpen()
-        self.projectPath = '%s/%s'%(self.userPath,input)
+        self.projectPath = '%s/%s'%(self.startProjectPath,input)
         self.realtimePath = self.projectPath
         self.projectList = os.listdir(self.projectPath)
     def get_project(self):
         if self.showProject == 1 :
             return self.projectList
         else :
-            print "[Project]"
+            return self.nonee
 
 ###################################
 #                                 #
@@ -236,7 +253,7 @@ class Function(object):
         if self.showProjectManage == 1 :
             return self.projectManageList
         else :
-            print "[ProjectManage]"
+            return self.nonee
 ###################################
 #                                 #
 #        sequences/assets         # 
@@ -254,7 +271,7 @@ class Function(object):
         if self.showSequences_category == 1 :
             return self.sequences_categoryList
         else :
-            print "[Sequences_category]"
+            return self.nonee
 
 ###################################
 #                                 #
@@ -273,7 +290,7 @@ class Function(object):
         if self.showShots == 1 :
             return self.shotsList
         else :
-            print "[Shots]"
+            return self.nonee
 
 
 ###################################
@@ -300,7 +317,7 @@ class Function(object):
                 return self.deptList
 
         else :
-            print "[Dept]"
+            return self.nonee
         
 
 ###################################
@@ -319,23 +336,25 @@ class Function(object):
         if self.showTask  == 1 :
              return   self.taskName
         else :
-            print "[Task]"     
+            return self.nonee
+
 ###################################
 #                                 #
 #           test Get              # 
 #                                 #
 ################################### 
+'''
     def testGet(self):
-        print "project      : " + str(test.get_project())
-        print "projectManage: " + str(test.get_projectManage())
-        print "seq / cate   : " + str(test.get_sequences_category())
-        print "Shots        : " + str(test.get_shots())
-        print "Dept         : " + str(test.get_dept("master"))
-        print "Task         : " + str(test.get_task())
-        print "Realtime     : " + str(test.get_showRealtime())
-        test.set_fileDisplay()
-        test.get_fileDisplay()
-        print "defultSystax : " + str(test.defultSystax())
+        print "project      : " + str(get_project())
+        print "projectManage: " + str(get_projectManage())
+        print "seq / cate   : " + str(get_sequences_category())
+        print "Shots        : " + str(get_shots())
+        print "Dept         : " + str(get_dept())
+        print "Task         : " + str(get_task())
+        print "Realtime     : " + str(get_showRealtime())
+        set_fileDisplay()
+        get_fileDisplay()
+        print "defultSystax : " + str(defultSystax())
 
 
 test = Function()
@@ -374,5 +393,5 @@ test.set_task("Y01_0020_Animation_master.v001.ma")
 #########################
 test.testGet()
 
-
+'''
 
