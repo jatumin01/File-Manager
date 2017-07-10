@@ -16,9 +16,12 @@ class Function(object):
         self.shotsPath = ""
         self.taskPath = ""
         self.taskName = ""
-        self.fileType = ['mayaAscii','mb']
+        self.fileType = ['mayaAscii']
         self.deptList = []
         self.nonee=["None"]
+        self.update = 1
+        self.follow = 1
+        self.searchBox=""
         self.clearOpen()
 
 ###################################
@@ -27,9 +30,13 @@ class Function(object):
 #                                 #
 ###################################
     def set_fileDisplay(self):
-            self.fileName = os.path.basename(cmds.file(q=True,loc=True))
-            self.fileTime = time.ctime(os.path.getmtime(self.realtimePath))
-            self.fileSize = os.path.getsize(self.realtimePath)
+        self.timeList = []
+        self.sizeList = []
+        for x in self.deptList:
+            self.fileTime = time.ctime(os.path.getmtime("%s/%s"%(self.realtimePath,x)))
+            self.fileSize = os.path.getsize("%s/%s"%(self.realtimePath,x))
+            self.timeList.append(self.fileTime)
+            self.sizeList.append(self.fileSize)
 
     def convert_size(self,size_bytes):
        if size_bytes == 0:
@@ -41,12 +48,12 @@ class Function(object):
        return "%s %s" % (self.s, self.size_name[self.i]) 
 
     def get_time(self):
-        if self.taskName == "" :
-            print "No File"
-        else :
-            return self.fileTime
+        return self.timeList
     def get_size(self):
-        return self.convert_size(self.fileSize)
+        self.conSizeList = []
+        for x in self.sizeList :
+            self.conSizeList.append(self.convert_size(x))
+        return self.conSizeList
 
 ###################################
 #                                 #
@@ -69,7 +76,9 @@ class Function(object):
 #          searchFile             # 
 #                                 #
 ###################################
-    def searchFile(self,input = ""):
+    def searchFile(self,inputSearch= ""):
+        self.searchBox = inputSearch
+        self.updateVersion(self.searchFile(inputSearch))
         self.fileFind = ""
         self.List = []
         self.searchAdetp = []
@@ -81,7 +90,7 @@ class Function(object):
                 self.fileFind+=x
                 self.List.append(x)
 
-        return self.List
+        self.deptList = self.List
        
 ###################################
 #                                 #
@@ -97,8 +106,8 @@ class Function(object):
 #                                 #
 ###################################
         
-    def openfile(self):
-        cmds.file(rename = "%s"%(self.realtimePath),open = True)
+    def openFile(self):
+        cmds.file("%s"%(self.realtimePath),open = True)
 
 ###################################
 #                                 #
@@ -107,8 +116,9 @@ class Function(object):
 ###################################
         
     def saveFile(self,input):
-        cmds.file(rename = "%s/%s"%(self.realtimePath,input))
-        cmds.file(save=True ,type=self.fileType)
+        cmds.file(rename = "%s"%(input))
+        cmds.file(save=True ,type='mayaAscii')
+
 
 ###################################
 #                                 #
@@ -136,9 +146,9 @@ class Function(object):
                 self.defultSystax = self.shotsName + "_" + self.shots_categery +"_"+ self.dept +"_" + self.verstion +".ma"
             return self.defultSystax 
 
-    def defultSystax_followTaskSearch(self,follow = 0):
+    def defultSystax_followTaskSearch(self,follow):
         self.follow = follow
-    def defultSystax_updateVersion(self,update = 0):
+    def defultSystax_updateVersion(self,update):
         self.update = update
 
 ###################################
@@ -305,13 +315,11 @@ class Function(object):
         self.deptPath = '%s/%s/scenes'%(self.shotsPath,input)
         self.dept = input
         self.realtimePath = self.deptPath
-        self.deptList = os.listdir(self.deptPath) 
-    def get_dept(self,inputSearch=""):
-        self.searchBox = inputSearch
+        self.deptList = os.listdir(self.deptPath)
+    def get_dept(self):
         if self.showDept == 1 :
             if self.searchBox != "" : 
-                self.updateVersion(self.searchFile(inputSearch))
-                return self.searchFile(inputSearch)
+                return self.deptList
             else :
                 self.updateVersion(self.deptList)
                 return self.deptList
@@ -334,28 +342,11 @@ class Function(object):
         self.taskName = os.path.basename(self.realtimePath)     
     def get_task(self):
         if self.showTask  == 1 :
-             return   self.taskName
+            return self.taskName
         else :
             return self.nonee
 
-###################################
-#                                 #
-#           test Get              # 
-#                                 #
-################################### 
 '''
-    def testGet(self):
-        print "project      : " + str(get_project())
-        print "projectManage: " + str(get_projectManage())
-        print "seq / cate   : " + str(get_sequences_category())
-        print "Shots        : " + str(get_shots())
-        print "Dept         : " + str(get_dept())
-        print "Task         : " + str(get_task())
-        print "Realtime     : " + str(get_showRealtime())
-        set_fileDisplay()
-        get_fileDisplay()
-        print "defultSystax : " + str(defultSystax())
-
 
 test = Function()
 print test.userPath
@@ -387,11 +378,6 @@ test.set_shots("Y01_0020")
 test.set_dept("Animation")
 
 test.set_task("Y01_0020_Animation_master.v001.ma")
-
-
-
-#########################
-test.testGet()
 
 '''
 

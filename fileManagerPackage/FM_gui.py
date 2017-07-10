@@ -1,5 +1,7 @@
 import sys
 import getpass
+import os 
+import maya.cmds as cmds
 userProfile = "C:/Users/"+getpass.getuser() + "/Documents/FileManager_louise"
 if not userProfile in sys.path:
     sys.path.append(userProfile)
@@ -12,9 +14,6 @@ test = function.Function()
 
 
 test.userPath
-
-test.defultSystax_followTaskSearch(1)
-test.defultSystax_updateVersion(1)
 test.set_startProject("yggintern")
 '''
 test.set_project("YIT")
@@ -89,28 +88,28 @@ class Louise_Gui(object):
             command=self.helpMenuCmd 
         );
 
-       		    ###################################
-				#                                 #
-#################         commonButtons           ###########################
-				#                                 #
-				################################### 
+   			######################################################
+			#                                 ####################
+        	#         commonButtons           ####################
+			#                                 ####################
+			######################################################
         
     def commonButtons(self):
         self.colomnMain = cmds.columnLayout("colomnMain" , adj = True )
         self.paneMain = cmds.paneLayout("main", configuration='vertical2' ) #create paneMain
         cmds.paneLayout(self.paneMain,e=True,ps=[1,10,10] ) 
-
-				###################################
-				#                                 #
-#################            left Pane            ###########################
-				#                                 #
-				###################################
         
-###################################
-#                                 #
-#            project              # 
-#                                 #
-###################################
+			######################################################
+			#                                 ####################
+        	#           left Pane             ####################
+			#                                 ####################
+			######################################################
+                
+        	###################################
+        	#                                 #
+        	#            project              # 
+        	#                                 #
+        	###################################
         self.paneProject = cmds.paneLayout("paneProject",configuration='horizontal2' )
         cmds.frameLayout ("project", label = "Project" )
         self.listProject = cmds.textScrollList( "listProjects" ,
@@ -120,24 +119,24 @@ class Louise_Gui(object):
         cmds.textScrollList(self.listProject,e=True,sc = self.secList_project )
 
 
-###################################
-#                                 #
-#         projectManager          # 
-#                                 #
-###################################
+        	###################################
+        	#                                 #
+        	#         projectManager          # 
+        	#                                 #
+        	###################################
         cmds.setParent(self.paneProject)
         cmds.frameLayout ("projectManager", label = "Project Manager" )
         self.projectManage = cmds.textScrollList( 
         	append=self.loadlist(test.get_project()),
         	p="projectManager" ,sc=self.secList_projectManage)
                 
-
         
-				###################################
-				#                                 #
-#################         centarl Pane            ###########################
-				#                                 #
-				###################################
+
+			######################################################
+			#                                 ####################
+        	#         centarl Pane            ####################
+			#                                 ####################
+			######################################################
         cmds.setParent(self.paneMain)
         cmds.columnLayout("Path",adj=True)
         cmds.rowLayout( 'pathLayout',numberOfColumns=3, 
@@ -145,15 +144,15 @@ class Louise_Gui(object):
             columnAlign=(1, 'left')
             )
         self.texts = cmds.text('File Path :')
-        cmds.textField('taskName' , text = "%s"%(test.realtimePath))
+        cmds.textField('taskName' ,en=False,text = "%s"%(test.realtimePath))
         cmds.button(l="return",w=100)
-        
-        
-###################################
-#                                 #
-#           seq / cate            # 
-#                                 #
-###################################
+                
+                
+        	###################################
+        	#                                 #
+        	#           seq / cate            # 
+        	#                                 #
+        	###################################
         cmds.setParent('..')
         cmds.paneLayout("main_task", configuration='vertical3' )
         cmds.paneLayout("central", configuration='vertical2' )
@@ -162,13 +161,13 @@ class Louise_Gui(object):
         	append=self.loadlist(test.get_projectManage()),
         	w=20 ,p = "seq_cate" , 
         	sc = self.secList_seqCate )
-        
-        
-###################################
-#                                 #
-#           shot / dept           # 
-#                                 #
-###################################
+                
+        	        
+        	###################################
+        	#                                 #
+        	#           shot / dept           # 
+        	#                                 #
+        	###################################
         cmds.setParent('..')
         cmds.paneLayout("project", configuration='horizontal2' )
         cmds.frameLayout ("shot_name", label = "shot / name" )
@@ -183,17 +182,17 @@ class Louise_Gui(object):
         cmds.setParent('main_task')
         
         cmds.columnLayout("TaskColumn",adj=True)
-
-				###################################
-				#                                 #
-#################            right Pane            ###########################
-				#                                 #
-				###################################
-###################################
-#                                 #
-#         Sences  task            # 
-#                                 #
-###################################
+        
+			######################################################
+			#                                 ####################
+        	#           right Pane            ####################
+			#                                 ####################
+			######################################################
+        	###################################
+        	#                                 #
+        	#         Sences  task            # 
+        	#                                 #
+        	###################################
         cmds.frameLayout ("task", label = "Scenes Task" )
         cmds.rowLayout( 'taskLayout',numberOfColumns=3, 
             columnWidth3=(80, 75, 150), adjustableColumn=2, 
@@ -201,40 +200,40 @@ class Louise_Gui(object):
             (2, 'left', 0), (3, 'left', 0)] 
             )
         cmds.text('search : ')
-        cmds.textField('taskName' , text = 'master')
-        cmds.button()
+        self.searchBox = cmds.textField()
+        self.searchButton = cmds.button(l = "Find" ,c=self.searchButton)
         cmds.setParent('..')
         cmds.paneLayout("task_detail", configuration='vertical3', )
-        
-###################################
-#                                 #
-#             Sences              # 
-#                                 #
-###################################
+                
+        	###################################
+        	#                                 #
+        	#             Sences              # 
+        	#                                 #
+        	###################################
         cmds.frameLayout ("Sences", label = "Sences" )
         self.taskSences = cmds.textScrollList( append=self.loadlist(test.get_dept()),
-            w=200,h=400 ,p="Sences")
+            w=200,h=400 ,p="Sences",sc = self.taskNameBox)
         cmds.setParent('..')
-        self.date = cmds.frameLayout ("Date Modified", label = "Date Modified" )
-        cmds.textScrollList( append=['one', 'two', 'three'] ,w=100,h=400 )
+        cmds.frameLayout ("Date Modified", label = "Date Modified" )
+        self.Date = cmds.textScrollList( w=100,h=400 )
         cmds.setParent('..')
         cmds.frameLayout ("Size", label = "Size" )
-        self.size = cmds.textScrollList( append=['one', 'two', 'three'],w=100,h=400 )
+        self.Size = cmds.textScrollList( w=100,h=400 )
         cmds.setParent('colomnMain')
         cmds.rowColumnLayout
-
-
-				###################################
-				#                                 #
-#################          Bottom pane            ###########################
-				#                                 #
-				###################################
-
-###################################
-#                                 #
-#         taskNameBox             # 
-#                                 #
-###################################
+        
+        
+			######################################################
+			#                                 ####################
+            #         Bottom pane             ####################
+			#                                 ####################
+			######################################################
+        
+        	###################################
+        	#                                 #
+        	#         taskNameBox             # 
+        	#                                 #
+        	###################################
         cmds.paneLayout("rowColumnSave_open",configuration='vertical2')
         cmds.paneLayout("rowColumnSave_open",e=True ,ps=[1,60,10] )
         cmds.columnLayout("file_type" , adj =True)
@@ -244,14 +243,14 @@ class Louise_Gui(object):
             (2, 'left', 0), (3, 'left', 0)] 
             )
         cmds.text( ' Search : ')
-        cmds.textField('taskName' , text = 'master')
-        cmds.button(l="DefultSyntax",w=100)
-        
-###################################
-#                                 #
-#         Type & checkbox         # 
-#                                 #
-###################################
+        self.taskName = cmds.textField('taskName' )
+        self.defultSyntax = cmds.button(l="DefultSyntax",w=100,c=self.DefultSyntax)
+        	        
+        	###################################
+        	#                                 #
+        	#         Type & checkbox         # 
+        	#                                 #
+        	###################################
         cmds.setParent('..')
         cmds.rowLayout( ' Type',numberOfColumns=3, 
             columnWidth3=(20, 75, 150), adjustableColumn=2, 
@@ -263,30 +262,33 @@ class Louise_Gui(object):
         self.menuItemList(test.fileType)
         cmds.columnLayout("check" , adj =True)
         cmds.checkBox( label = "follow Search", 
-            onCommand = "on_func", 
-            offCommand = "off_func",
+            onCommand = self.followTaskSearch_on, 
+            offCommand = self.followTaskSearch_off,
             value =1
             )
         cmds.checkBox( label = "update Version", 
-            onCommand = "on_func", 
-            offCommand = "off_func",
-            value =1
+            onCommand = self.updateVersion_on, 
+            offCommand = self.updateVersion_off,
+            value =1 
             )
         cmds.setParent('rowColumnSave_open')
         cmds.formLayout("formLayout",numberOfDivisions=300)
-        b1 = cmds.button(l="Save",w=150,h=30)
-        b2 = cmds.button(l="Open",w=150,h=30)
+        self.b1 = cmds.button(l="Save",w=150,h=30,en=False,c=self.saveFuciton)
+        self.b2 = cmds.button(l="Open",w=150,h=30,en=False,c=self.openFuciton)
         cmds.formLayout( "formLayout", edit=True, attachForm=[
-            (b1, 'top', 25), (b1, 'left', 25), 
-            (b2, 'top', 25), (b2, 'right', 25) ]
+            (self.b1, 'top', 25), (self.b1, 'left', 25), 
+            (self.b2, 'top', 25), (self.b2, 'right', 25) ]
             )
         cmds.columnLayout(self.colomnMain ,e=True , h=200, w=1000)
 
-				###################################
-				#                                 #
-#################          feature in GUI         ###########################
-				#                                 #
-				###################################
+			######################################################
+			#                                 ####################
+        	#          feature in GUI         ####################
+			#                                 ####################
+			######################################################
+
+    def DefultSyntax(self,*args):
+    	cmds.textField(self.taskName ,e=True ,text=test.defultSystax())
 
     def loadlist(self,List):
     	self.findList = []
@@ -325,28 +327,39 @@ class Louise_Gui(object):
         	append=self.loadlist(test.get_shots()),
         	)
 
+    def searchButton(self,*args):
+    	self.searchName = cmds.textField(self.searchBox,q=True,text = True)
+    	test.searchFile(self.searchName)
+    	self.showTask()
+
     def secList_task(self,*args) :
-    	self.sec = cmds.textScrollList( self.dept,q = True , selectItem = True)
-    	test.set_dept(self.sec[0])
+        cmds.button(self.b1,e=True,en=True)
+        cmds.button(self.b2,e=True,en=True)
+        self.saveList = []
+        self.savePath = []
+        self.sec = cmds.textScrollList( self.dept,q = True , selectItem = True)
+        test.set_dept(self.sec[0])
+        cmds.textField('taskName' ,e=True, text = "%s"%(test.realtimePath))
+        self.showTask()
+
+    def showTask(self):
+        cmds.textScrollList( self.taskSences, e=True,ra=True,append=self.loadlist(test.get_dept()))
+        test.set_fileDisplay()
+        cmds.textScrollList( self.Date, e=True,ra=True,append=self.loadlist(test.get_time()))
+        cmds.textScrollList( self.Size, e=True,ra=True,append=self.loadlist(test.get_size()))
+
+    def taskNameBox(self,*args):
+    	self.sec = cmds.textScrollList( self.taskSences ,q = True , selectItem = True)
+    	test.set_task(self.sec[0])
     	cmds.textField('taskName' ,e=True, text = "%s"%(test.realtimePath))
-    	cmds.textScrollList( self.taskSences, e=True,ra=True,
-        	append=self.loadlist(test.get_dept()),
-        	)
-'''
-    	cmds.textScrollList( self.date, e=True,ra=True,
-        	append=self.loadlist(test.get_time()),
-        	)
-    	cmds.textScrollList( self.size, e=True,ra=True,
-        	append=self.loadlist(test.get_size()),
-        	)
-'''
+    	cmds.textField(self.taskName , e=True , text = "%s"%(self.sec[0]))
 
     def menuItemList(self,menuList):
-    	for x in menuList:
-    		cmds.menuItem(l="%s"%(x))
+        for x in menuList:
+            cmds.menuItem(l="%s"%(x))
 
     def printNewMenuItem(self,item=""):
-	    print item
+        print item
 
     def helpMenuCmd(self, *args): 
         cmds.launch(web='http://docs.python.org/2/library/');
@@ -356,12 +369,32 @@ class Louise_Gui(object):
     def editMenuActionCmd(self, *args): pass
     def displayOptions(self): pass 
 
-
-###################################
-#                                 #
-#             Create              # 
-#                                 #
-###################################
+    def saveFuciton(self,*args):
+    	self.fileName = cmds.textField(self.taskName , q=True ,text=True )
+    	self.rename = os.path.dirname(test.realtimePath)
+    	test.saveFile("%s/%s"%(test.deptPath,self.fileName))
+    	self.secList_task()
+    	print test.realtimePath
+    def openFuciton(self,*args):
+    	self.fileName = cmds.textField(self.taskName , q=True ,text=True )
+    	test.openFile()
+    def followTaskSearch_on(self,*args):
+    	test.defultSystax_followTaskSearch(1)
+    	print "Task 1"
+    def followTaskSearch_off(self,*args):
+    	test.defultSystax_followTaskSearch(0)
+    	print "Task 0"
+    def updateVersion_on(self,*args) :
+    	test.defultSystax_updateVersion(1)
+    	print "version 1"
+    def updateVersion_off(self,*args) :
+    	test.defultSystax_updateVersion(0)
+    	print "version 0"
+    ###################################
+    #                                 #
+    #             Create              # 
+    #                                 #
+    ###################################
     def create(self): 
         if cmds.window(self.window, exists=True):
             cmds.deleteUI(self.window, window=True);
