@@ -1,11 +1,6 @@
-import sys
 import getpass
 import os 
 import maya.cmds as cmds
-userProfile = "C:/Users/"+getpass.getuser() + "/Documents/FileManager_louise"
-if not userProfile in sys.path:
-    sys.path.append(userProfile)
-
 import fileManagerPackage.FM_function as function
 reload(function)
 
@@ -15,36 +10,7 @@ test = function.Function()
 
 test.userPath
 test.set_startProject("yggintern")
-'''
-test.set_project("YIT")
 
-test.set_projectManage("sequences")
-
-test.set_sequences_category("Y01")
-
-test.set_shots("Y01_0020")
-test.set_dept("Animation")
-
-test.set_projectManage("assets")
-
-test.set_sequences_category("Prop")
-test.set_shots("weapon")
-test.set_sequences_category("Character")
-test.set_shots("norman")
-test.set_dept("Model")
-
-test.set_task("Char_Norman_A1_v010.mb")
-
-test.set_projectManage("sequences")
-
-test.set_sequences_category("Y01")
-test.set_shots("Y01_0020")
-test.set_dept("Animation")
-
-test.set_task("Y01_0020_Animation_master.v001.ma")
-
-
-'''
 
 
 class Louise_Gui(object):
@@ -54,6 +20,7 @@ class Louise_Gui(object):
         self.title = 'Louise_Gui';
         self.size = (1000, 600);
         self.supportsToolAction = False;
+        self.ix = 0
 
     
     def commonMenu(self):
@@ -200,7 +167,7 @@ class Louise_Gui(object):
             (2, 'left', 0), (3, 'left', 0)] 
             )
         cmds.text('search : ')
-        self.searchBox = cmds.textField()
+        self.searchBox = cmds.textField(ec=self.searchButton)
         self.searchButton = cmds.button(l = "Find" ,c=self.searchButton)
         cmds.setParent('..')
         cmds.paneLayout("task_detail", configuration='vertical3', )
@@ -243,7 +210,7 @@ class Louise_Gui(object):
             (2, 'left', 0), (3, 'left', 0)] 
             )
         cmds.text( ' Search : ')
-        self.taskName = cmds.textField('taskName' )
+        self.taskName = cmds.textField('taskFile' )
         self.defultSyntax = cmds.button(l="DefultSyntax",w=100,c=self.DefultSyntax)
         	        
         	###################################
@@ -264,12 +231,12 @@ class Louise_Gui(object):
         cmds.checkBox( label = "follow Search", 
             onCommand = self.followTaskSearch_on, 
             offCommand = self.followTaskSearch_off,
-            value =1
+            value =0
             )
         cmds.checkBox( label = "update Version", 
             onCommand = self.updateVersion_on, 
             offCommand = self.updateVersion_off,
-            value =1 
+            value =0 
             )
         cmds.setParent('rowColumnSave_open')
         cmds.formLayout("formLayout",numberOfDivisions=300)
@@ -281,6 +248,19 @@ class Louise_Gui(object):
             )
         cmds.columnLayout(self.colomnMain ,e=True , h=200, w=1000)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 			######################################################
 			#                                 ####################
         	#          feature in GUI         ####################
@@ -288,7 +268,10 @@ class Louise_Gui(object):
 			######################################################
 
     def DefultSyntax(self,*args):
-    	cmds.textField(self.taskName ,e=True ,text=test.defultSystax())
+    	self.searchName = cmds.textField(self.searchBox,q=True,text = True)
+    	test.searchBox = self.searchName
+    	self.defultAttr = test.defultSystax()
+    	cmds.textField('taskFile',e=True ,text=self.defultAttr)
 
     def loadlist(self,List):
     	self.findList = []
@@ -329,8 +312,10 @@ class Louise_Gui(object):
 
     def searchButton(self,*args):
     	self.searchName = cmds.textField(self.searchBox,q=True,text = True)
-    	test.searchFile(self.searchName)
-    	self.showTask()
+        cmds.textScrollList( self.taskSences, e=True,ra=True,append=self.loadlist(test.get_dept(self.searchName)))
+        test.set_fileDisplay(self.searchName)
+        cmds.textScrollList( self.Date, e=True,ra=True,append=self.loadlist(test.get_time()))
+        cmds.textScrollList( self.Size, e=True,ra=True,append=self.loadlist(test.get_size()))
 
     def secList_task(self,*args) :
         cmds.button(self.b1,e=True,en=True)

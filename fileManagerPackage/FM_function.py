@@ -19,9 +19,10 @@ class Function(object):
         self.fileType = ['mayaAscii']
         self.deptList = []
         self.nonee=["None"]
-        self.update = 1
-        self.follow = 1
+        self.update = 0
+        self.follow = 0
         self.searchBox=""
+        self.checkSet = 0
         self.clearOpen()
 
 ###################################
@@ -29,14 +30,25 @@ class Function(object):
 #           fileDisplay           # 
 #                                 #
 ###################################
-    def set_fileDisplay(self):
-        self.timeList = []
-        self.sizeList = []
-        for x in self.deptList:
-            self.fileTime = time.ctime(os.path.getmtime("%s/%s"%(self.realtimePath,x)))
-            self.fileSize = os.path.getsize("%s/%s"%(self.realtimePath,x))
-            self.timeList.append(self.fileTime)
-            self.sizeList.append(self.fileSize)
+    def set_fileDisplay(self,input=""):
+        self.inputSearch = input
+        if self.inputSearch == "":
+            self.timeList = []
+            self.sizeList = []
+            for x in self.deptList:
+                self.fileTime = time.ctime(os.path.getmtime("%s/%s"%(self.realtimePath,x)))
+                self.fileSize = os.path.getsize("%s/%s"%(self.realtimePath,x))
+                self.timeList.append(self.fileTime)
+                self.sizeList.append(self.fileSize)
+        else :
+            self.timeList = []
+            self.sizeList = []
+            self.searchList = self.searchFile(self.inputSearch)
+            for x in self.searchList :
+                self.fileTime = time.ctime(os.path.getmtime("%s/%s"%(self.realtimePath,x)))
+                self.fileSize = os.path.getsize("%s/%s"%(self.realtimePath,x))
+                self.timeList.append(self.fileTime)
+                self.sizeList.append(self.fileSize)
 
     def convert_size(self,size_bytes):
        if size_bytes == 0:
@@ -76,9 +88,7 @@ class Function(object):
 #          searchFile             # 
 #                                 #
 ###################################
-    def searchFile(self,inputSearch= ""):
-        self.searchBox = inputSearch
-        self.updateVersion(self.searchFile(inputSearch))
+    def searchFile(self,input):
         self.fileFind = ""
         self.List = []
         self.searchAdetp = []
@@ -90,7 +100,7 @@ class Function(object):
                 self.fileFind+=x
                 self.List.append(x)
 
-        self.deptList = self.List
+        return self.List
        
 ###################################
 #                                 #
@@ -131,20 +141,20 @@ class Function(object):
             if self.searchBox != "" :
                 self.taskNaming = "_"+self.searchBox+"_"
 
-        if self.taskName == "" :
-            self.defultSystax = "None Syntax"
-            return self.defultSystax 
+        if self.checkSet == 0 :
+            self.defultSystax2 = "None Syntax"
+            return self.defultSystax2 
         else :
             if self.projectManage == "sequences" :
                 self.shotsName = self.shots_categery
-                self.defultSystax = self.shotsName + "_" + self.dept + self.taskNaming + self.verstion +".ma"
+                self.defultSystax2 = self.shotsName + "_" + self.dept + self.taskNaming + self.verstion +".ma"
             elif self.projectManage == "assets" :
                 if self.sequences_category == "Character" :
                     self.shotsName = "Char"
                 elif self.sequences_category == "Prop" :
                     self.shotsName = "Prop"
-                self.defultSystax = self.shotsName + "_" + self.shots_categery +"_"+ self.dept +"_" + self.verstion +".ma"
-            return self.defultSystax 
+                self.defultSystax2 = self.shotsName + "_" + self.shots_categery +"_"+ self.dept +"_" + self.verstion +".ma"
+            return self.defultSystax2 
 
     def defultSystax_followTaskSearch(self,follow):
         self.follow = follow
@@ -309,6 +319,7 @@ class Function(object):
 #                                 #
 ###################################  
     def set_dept(self,input):
+        self.checkSet = 1
         self.clearOpen()
         self.showDept = 1
         self.checkOpen()
@@ -316,10 +327,12 @@ class Function(object):
         self.dept = input
         self.realtimePath = self.deptPath
         self.deptList = os.listdir(self.deptPath)
-    def get_dept(self):
+    def get_dept(self,inputSearch=""):
+        self.searchBox = inputSearch
         if self.showDept == 1 :
-            if self.searchBox != "" : 
-                return self.deptList
+            if self.searchBox != "" :
+                self.updateVersion(self.searchFile(inputSearch)) 
+                return self.searchFile(inputSearch)
             else :
                 self.updateVersion(self.deptList)
                 return self.deptList
