@@ -112,7 +112,7 @@ class Louise_Gui(object):
             )
         self.texts = cmds.text('File Path :')
         cmds.textField('taskName' ,en=False,text = "%s"%(test.realtimePath))
-        cmds.button(l="return",w=100)
+        #cmds.button(l="return",w=100)
                 
                 
         	###################################
