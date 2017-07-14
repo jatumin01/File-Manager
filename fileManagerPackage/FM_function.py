@@ -18,12 +18,18 @@ class Function(object):
         self.taskName = ""
         self.fileType = ['mayaAscii']
         self.deptList = []
-        self.nonee=["None"]
+        self.nonee=[]
         self.update = 0
         self.follow = 0
         self.searchBox=""
         self.checkSet = 0
-        self.clearOpen()
+        self.showstartProject = 1
+        self.showProject = 0
+        self.showProjectManage = 0
+        self.showSequences_category = 0
+        self.showShots = 0
+        self.showDept = 0
+        self.showTask = 0
 
 ###################################
 #                                 #
@@ -60,12 +66,19 @@ class Function(object):
        return "%s %s" % (self.s, self.size_name[self.i]) 
 
     def get_time(self):
-        return self.timeList
+        if self.showDept == 1 :
+            return self.timeList
+        elif self.showDept == 0 :
+            return self.nonee
     def get_size(self):
         self.conSizeList = []
-        for x in self.sizeList :
-            self.conSizeList.append(self.convert_size(x))
-        return self.conSizeList
+        if self.showDept == 1 :
+            for x in self.sizeList :
+                self.conSizeList.append(self.convert_size(x))
+            return self.conSizeList
+        elif self.showDept == 0 :
+            return self.conSizeList
+
 
 ###################################
 #                                 #
@@ -161,48 +174,9 @@ class Function(object):
     def defultSystax_updateVersion(self,update):
         self.update = update
 
-###################################
-#                                 #
-#           clearOpen             # 
-#                                 #
-###################################
-    def clearOpen(self):
-        self.showstartProject = 1
-        self.showProject = 0
-        self.showProjectManage = 0
-        self.showSequences_category = 0
-        self.showShots = 0
-        self.showDept = 0
-        self.showTask = 0
 
-###################################
-#                                 #
-#           checkOpen             # 
-#                                 #
-###################################
-    def checkOpen(self):
-        if self.showTask == 1:
-            self.showDept = 1 
-            self.showShots =  1
-            self.showSequences_category = 1
-            self.showProjectManage = 1
-            self.showProject = 1
-        elif  self.showDept == 1 :
-            self.showShots = 1
-            self.showSequences_category = 1
-            self.showProjectManage = 1
-            self.showProject = 1
-        elif self.showShots == 1 :
-            self.showSequences_category = 1
-            self.showProjectManage = 1
-            self.showProject = 1
-        elif self.showSequences_category == 1 :
-            self.showProject = 1
-            self.showProjectManage = 1
-        elif self.showProjectManage == 1 :
-            self.showProject = 1
-        elif self.showProject == 1 :
-            pass
+
+
 ###################################
 #                                 #
 #         updateVersion           # 
@@ -229,7 +203,7 @@ class Function(object):
 #                                 #
 ###################################
     def set_startProject(self,input):
-        self.clearOpen()
+        self.showstartProject = 1
         self.startProjectPath = '%s/%s'%(self.userPath,input)
         self.realtimePath = self.startProjectPath
         self.startProjectList = os.listdir(self.startProjectPath)
@@ -244,9 +218,13 @@ class Function(object):
 #                                 #
 ###################################
     def set_project(self,input):
-        self.clearOpen()
         self.showProject = 1
-        self.checkOpen()
+        self.showSequences_category = 0
+        self.showProjectManage = 0
+        self.showDept = 0
+        self.showShots = 0
+        self.showTask = 0
+        self.checkSet = 0
         self.projectPath = '%s/%s'%(self.startProjectPath,input)
         self.realtimePath = self.projectPath
         self.projectList = os.listdir(self.projectPath)
@@ -262,9 +240,12 @@ class Function(object):
 #                                 #
 ###################################     
     def set_projectManage(self,input):
-        self.clearOpen()
         self.showProjectManage = 1
-        self.checkOpen()
+        self.showDept = 0
+        self.showShots = 0
+        self.showTask = 0
+        self.showSequences_category = 0
+        self.checkSet = 0
         self.projectManagePath = '%s/%s'%(self.projectPath,input)
         self.projectManage = input
         self.realtimePath = self.projectManagePath
@@ -280,9 +261,11 @@ class Function(object):
 #                                 #
 ###################################  
     def set_sequences_category(self,input):
-        self.clearOpen()
         self.showSequences_category = 1
-        self.checkOpen()
+        self.showDept = 0
+        self.showShots = 0
+        self.showTask = 0
+        self.checkSet = 0
         self.sequences_categoryPath = '%s/%s'%(self.projectManagePath,input)
         self.sequences_category = input
         self.realtimePath = self.sequences_categoryPath
@@ -299,9 +282,10 @@ class Function(object):
 #                                 #
 ################################### 
     def set_shots(self,input):
-        self.clearOpen()
         self.showShots = 1
-        self.checkOpen()
+        self.showDept = 0
+        self.showTask = 0
+        self.checkSet = 0
         self.shotsPath = '%s/%s'%(self.sequences_categoryPath,input)
         self.shots_categery = input
         self.realtimePath = self.shotsPath
@@ -320,9 +304,8 @@ class Function(object):
 ###################################  
     def set_dept(self,input):
         self.checkSet = 1
-        self.clearOpen()
         self.showDept = 1
-        self.checkOpen()
+        self.showTask = 0
         self.deptPath = '%s/%s/scenes'%(self.shotsPath,input)
         self.dept = input
         self.realtimePath = self.deptPath
@@ -347,9 +330,7 @@ class Function(object):
 #                                 #
 ################################### 
     def set_task(self,input):
-        self.clearOpen()
         self.showTask = 1
-        self.checkOpen()
         self.taskPath = '%s/%s'%(self.deptPath,input)
         self.realtimePath = self.taskPath
         self.taskName = os.path.basename(self.realtimePath)     

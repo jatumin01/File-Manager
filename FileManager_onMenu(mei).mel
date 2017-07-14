@@ -1,0 +1,31 @@
+python("import sys");
+python("import getpass");
+python("user =getpass.getuser() ")
+python("userProfile = 'C:/Users/' + user + '/Documents/FileManager_louise'")
+python("if not userProfile in sys.path:\n    sys.path.append(userProfile)")
+
+proc tictactoe(){
+    python("import tictactoePackage.tictactoe_GUI as ttt\nreload(ttt)");
+    }
+
+proc fileManager(){ 
+    python("import fileManagerPackage.FM_gui as gui\nreload(gui)");
+    }
+
+proc cardGame(){
+    python("import cardGamePackage.CG_masterCompiled as runCG\nreload(runCG)");    
+    }
+    
+$main = $gMainWindow
+    
+if menu "Menuu" -q true -ex true {
+    deleteUI "Menu"
+    }
+
+
+menu "Menuu" -p $main -label "Louise" -tearOff true;
+    menuItem -label "Reload";
+    menuItem -divider true;
+    menuItem -label "CardGame";
+    menuItem -label "FileManager";
+    menuItem -label "Tactactoe";

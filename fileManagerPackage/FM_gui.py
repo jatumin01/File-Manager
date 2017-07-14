@@ -280,6 +280,7 @@ class Louise_Gui(object):
 
     	return self.findList
 
+    		#################   Project   ###############
 
     def secList_project(self,*args) :
     	self.sec = cmds.textScrollList( "listProjects" ,q = True , selectItem = True)
@@ -288,6 +289,21 @@ class Louise_Gui(object):
     	cmds.textScrollList( self.projectManage, e=True,ra=True,
         	append=self.loadlist(test.get_project()),
         	)
+    	cmds.textScrollList( self.seq_cate, e=True,ra=True,
+        	append=self.loadlist(test.get_projectManage()),
+        	)
+    	cmds.textScrollList( self.shots, e=True,ra=True,
+        	append=self.loadlist(test.get_sequences_category()),
+        	)
+    	cmds.textScrollList( self.dept, e=True,ra=True,
+        	append=self.loadlist(test.get_shots()),
+        	)
+        cmds.textScrollList( self.taskSences, e=True,ra=True,append=self.loadlist(test.get_dept()))
+        cmds.textScrollList( self.Date, e=True,ra=True,append=[""])
+        cmds.textScrollList( self.Size, e=True,ra=True,append=[""])
+
+    		#################   ProjectManage   ###############
+
     def secList_projectManage(self,*args) :
     	self.sec = cmds.textScrollList( self.projectManage ,q = True , selectItem = True)
     	test.set_projectManage(self.sec[0])
@@ -295,6 +311,19 @@ class Louise_Gui(object):
     	cmds.textScrollList( self.seq_cate, e=True,ra=True,
         	append=self.loadlist(test.get_projectManage()),
         	)
+    	cmds.textScrollList( self.shots, e=True,ra=True,
+        	append=self.loadlist(test.get_sequences_category()),
+        	)
+    	cmds.textScrollList( self.dept, e=True,ra=True,
+        	append=self.loadlist(test.get_shots()),
+        	)
+        cmds.textScrollList( self.taskSences, e=True,ra=True,append=self.loadlist(test.get_dept()))
+        cmds.textScrollList( self.Date, e=True,ra=True,append=[""])
+        cmds.textScrollList( self.Size, e=True,ra=True,append=[""])
+
+
+    		#################   seq / Cate   ###############
+
     def secList_seqCate(self,*args) :
     	self.sec = cmds.textScrollList( self.seq_cate,q = True , selectItem = True)
     	test.set_sequences_category(self.sec[0])
@@ -302,6 +331,15 @@ class Louise_Gui(object):
     	cmds.textScrollList( self.shots, e=True,ra=True,
         	append=self.loadlist(test.get_sequences_category()),
         	)
+    	cmds.textScrollList( self.dept, e=True,ra=True,
+        	append=self.loadlist(test.get_shots()),
+        	)
+        cmds.textScrollList( self.taskSences, e=True,ra=True,append=self.loadlist(test.get_dept()))
+        cmds.textScrollList( self.Date, e=True,ra=True,append=[""])
+        cmds.textScrollList( self.Size, e=True,ra=True,append=[""])
+
+    		#################   dept   ###############
+
     def secList_dept(self,*args) :
     	self.sec = cmds.textScrollList( self.shots,q = True , selectItem = True)
     	test.set_shots(self.sec[0])
@@ -309,6 +347,18 @@ class Louise_Gui(object):
     	cmds.textScrollList( self.dept, e=True,ra=True,
         	append=self.loadlist(test.get_shots()),
         	)
+    	cmds.textScrollList( self.taskSences, e=True,ra=True,append=self.loadlist(test.get_dept()))
+        cmds.textScrollList( self.Date, e=True,ra=True,append=[""])
+        cmds.textScrollList( self.Size, e=True,ra=True,append=[""])
+
+    def showTask(self):
+    	cmds.textScrollList( self.taskSences, e=True,ra=True,append=self.loadlist(test.get_dept()))
+        test.set_fileDisplay()
+        cmds.textScrollList( self.Date, e=True,ra=True,append=self.loadlist(test.get_time()))
+        cmds.textScrollList( self.Size, e=True,ra=True,append=self.loadlist(test.get_size()))
+
+
+    		#################   searchButton   ###############
 
     def searchButton(self,*args):
     	self.searchName = cmds.textField(self.searchBox,q=True,text = True)
@@ -327,17 +377,14 @@ class Louise_Gui(object):
         cmds.textField('taskName' ,e=True, text = "%s"%(test.realtimePath))
         self.showTask()
 
-    def showTask(self):
-        cmds.textScrollList( self.taskSences, e=True,ra=True,append=self.loadlist(test.get_dept()))
-        test.set_fileDisplay()
-        cmds.textScrollList( self.Date, e=True,ra=True,append=self.loadlist(test.get_time()))
-        cmds.textScrollList( self.Size, e=True,ra=True,append=self.loadlist(test.get_size()))
 
     def taskNameBox(self,*args):
     	self.sec = cmds.textScrollList( self.taskSences ,q = True , selectItem = True)
     	test.set_task(self.sec[0])
     	cmds.textField('taskName' ,e=True, text = "%s"%(test.realtimePath))
     	cmds.textField(self.taskName , e=True , text = "%s"%(self.sec[0]))
+
+
 
     def menuItemList(self,menuList):
         for x in menuList:
